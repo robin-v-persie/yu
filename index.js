@@ -1,12 +1,21 @@
-const createAudioPlayer = () => {
-    console.log('CreateAudioPlayer')
-};
+import express from 'express';
+import path from 'path';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-const AudioPlayer = function () {
-    console.log('new')
-    this.createAPlayer = createAudioPlayer
-}
+const app = express();
+const port = 3000;
 
-module.exports = AudioPlayer //要引出的模块名，其他项目如果要使用这个包，将会导入AudioPlayer
-//由于定义了 this.createAPlayer = createAudioPlayer
-//那么其他用户在使用时，就可以使用new AudioPlayer(.createAPlayer()这个函数
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+app.use(express.static(path.join(__dirname, '/public')));
+app.use('/dist', express.static(path.join(__dirname, 'dist')));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(port, () => {
+    console.log(`Application running on http://localhost:${port}`);
+});
